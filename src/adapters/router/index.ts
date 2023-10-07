@@ -1,0 +1,1 @@
+export {RouterAdapter} from './router-adapter'
