@@ -13,7 +13,7 @@ export class PaymentsController {
       const params = context.getRequest().params;
 
       const qrCodeResponse = await this.paymentsClientService.generateCobQRCode(
-        params.id
+        Number(params.id)
       );
 
       if (qrCodeResponse) {
