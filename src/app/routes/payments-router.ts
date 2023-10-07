@@ -11,7 +11,7 @@ paymentsRouter.get("/cob", async (req, res) => {
   return paymentsClientController.generateCobImmediately(adapter);
 });
 
-paymentsRouter.post("/webhook/:pix?", async (req, res) => {
+paymentsRouter.post("/webhook(/pix)?", async (req, res) => {
   console.log("req", req.body);
   return res.send("200");
 });
