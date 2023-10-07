@@ -11,7 +11,7 @@ app.use(express.json());
 app.use("/", routes.router);
 
 app.set("view engine", "ejs");
-app.set("views", "./dist/views");
+app.set("views", "./views");
 app.use(bodyParser.json());
 
 Server.start(app)
