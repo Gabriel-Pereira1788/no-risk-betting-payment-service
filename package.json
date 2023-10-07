@@ -5,10 +5,11 @@
   "main": "index.js",
   "license": "UNLICENSED",
   "scripts": {
+    "prebuild": "ts-node ./src/scripts/copy-assets",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
     "start": "node dist/app.js",
-    "build": "tsc"
+    "build": "tsc --noEmit false"
   },
   "dependencies": {
     "axios": "^1.5.1",
@@ -22,6 +23,9 @@
     "@types/cors": "^2.8.14",
     "@types/express": "^4.17.18",
     "@types/node": "^20.5.9",
+    "@types/shelljs": "^0.8.13",
+    "shelljs": "^0.8.5",
+    "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"
   }
