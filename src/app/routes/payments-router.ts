@@ -12,29 +12,15 @@ paymentsRouter.get("/cob", async (req, res) => {
 });
 
 paymentsRouter.post("/webhook(/pix)?", async (req, res) => {
-  console.log("req", req.body);
-  return res.send("200");
+  const adapter = new ExpressAdapter(req, res);
+
+  return paymentsClientController.webHookHandler(adapter);
 });
 
-paymentsRouter.get("/:id/qrcode", async (req, res) => {
+paymentsRouter.get("/:id/:txid/qrcode", async (req, res) => {
   const adapter = new ExpressAdapter(req, res);
 
   return paymentsClientController.generateQrCode(adapter);
-
-  // {
-  //   "calendario": {
-  //     "expiracao": 3600
-  //   },
-  //   "devedor": {
-  //     "cpf": "12345678909",
-  //     "nome": "Francisco da Silva"
-  //   },
-  //   "valor": {
-  //     "original": "124.45"
-  //   },
-  //   "chave": "5ee68dae-af9b-4644-a22a-abc0426a02ed",
-  //   "solicitacaoPagador": "Informe o número ou identificador do pedido."
-  // }
 });
 
 export default paymentsRouter;

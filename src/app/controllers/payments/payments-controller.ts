@@ -1,4 +1,5 @@
 import { HttpContext } from "../../../adapters";
+import socketIO  from "../../../socket";
 import { PaymentsClientServiceImpl } from "../../services/client/paymentsClient/models";
 
 export class PaymentsController {
@@ -6,6 +7,26 @@ export class PaymentsController {
 
   constructor(paymentsClientServiceImpl: PaymentsClientServiceImpl) {
     this.paymentsClientService = paymentsClientServiceImpl;
+  }
+
+  async webHookHandler(context: HttpContext) {
+    const body = context.getRequest().body as { pix: { txid: string }[] };
+
+    if (body && body.pix) {
+      const clients = socketIO.getClientsList();
+
+      body.pix.forEach((pix) => {
+        const client = clients.find((_client) => _client.txid === pix.txid);
+
+        if (client) {
+          client.socket.emit(`txid=${client.txid}`, {
+            paymentStatus: "success",
+          });
+        }
+      });
+    }
+
+    return context.send(200,"success")
   }
 
   async generateQrCode(context: HttpContext) {
@@ -17,11 +38,19 @@ export class PaymentsController {
       );
 
       if (qrCodeResponse) {
-        context.render("qrcode", {
-          qrCodeImage: qrCodeResponse?.imageBase64,
+        socketIO.connect("connection", (socket) => {
+          socketIO.addToClientsList({
+            txid: params.txid,
+            socket,
+          });
+          socket.emit(`txid=${params.txid}`, {message:"Ola cliente",paymentStatus:"pending"});
         });
+        context.send(200, qrCodeResponse);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log("error qrcode", error);
+      context.send(500, { message: "Tente novamente mais tarde" });
+    }
   }
 
   async generateCobImmediately(context: HttpContext) {

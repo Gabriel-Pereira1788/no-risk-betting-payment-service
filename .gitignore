@@ -1,3 +1,4 @@
 src/certs
 .env
 dist
+node_modules
